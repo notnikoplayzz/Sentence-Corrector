@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f5f6fb">
+<title>Sentence Corrector — Scrie mai clar</title>
+<style>
+:root{color-scheme:light;--bg:#f5f6fb;--surface:#fff;--surface2:#f8f9fd;--text:#182033;--muted:#697386;--line:#e4e8f0;--accent:#6558df;--accent2:#5043c6;--green:#13845b;--greenbg:#e7f8ef;--shadow:0 22px 65px rgba(35,42,80,.08)}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0e1220;--surface:#171d2d;--surface2:#1c2437;--text:#edf0fa;--muted:#a0abc2;--line:#2b354b;--accent:#a59aff;--accent2:#b7adff;--green:#6ee7b7;--greenbg:#17382f;--shadow:0 22px 65px rgba(0,0,0,.22)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 15% 0%,rgba(101,88,223,.10),transparent 38%),var(--bg);color:var(--text);font:16px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;transition:background .2s,color .2s}
+button,textarea,input{font:inherit}button{cursor:pointer}.shell{width:min(1100px,calc(100% - 36px));margin:auto;padding:26px 0 40px}
+header{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:62px}.brand{display:flex;align-items:center;gap:11px;font-weight:850;letter-spacing:-.045em;font-size:1.15rem}.brandmark{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;color:#fff;background:linear-gradient(140deg,#7467f0,#4d42c4);box-shadow:0 8px 22px #6558df38}.head-actions{display:flex;align-items:center;gap:10px}.pill{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;padding:8px 12px;color:var(--muted);font-size:.82rem;background:var(--surface)}.live-dot{height:7px;width:7px;background:#20b779;border-radius:50%}.theme-btn{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);color:var(--text);padding:9px 12px;border-radius:12px;font-size:.86rem;font-weight:650}.theme-btn:hover,.ghost:hover{border-color:var(--accent)}
+.hero{text-align:center;max-width:760px;margin:0 auto 32px}.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--accent);font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:.14em}.eyebrow:before{content:"";height:1px;width:22px;background:currentColor}h1{font-size:clamp(2.4rem,6vw,4.4rem);line-height:1.04;letter-spacing:-.065em;margin:16px 0 18px;font-weight:850}h1 span{color:var(--accent)}.hero p{max-width:620px;margin:0 auto;color:var(--muted);font-size:1.08rem}
+.workspace{display:grid;grid-template-columns:1fr 1fr;gap:17px}.panel{min-width:0;overflow:hidden;background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow)}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 20px;border-bottom:1px solid var(--line)}.panel-title{display:flex;align-items:center;gap:10px;font-weight:750}.iconbox{display:grid;place-items:center;width:31px;height:31px;border-radius:10px;background:var(--surface2);color:var(--accent);font-size:1rem}.meta{font-size:.78rem;color:var(--muted)}textarea{display:block;width:100%;min-height:290px;resize:vertical;border:0;outline:0;padding:22px;background:transparent;color:var(--text);font-size:1rem;line-height:1.9}textarea::placeholder{color:var(--muted);opacity:.7}textarea:focus-visible{box-shadow:inset 0 0 0 2px var(--accent)}.result{min-height:290px;padding:22px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.9}.placeholder{color:var(--muted);opacity:.7}.result-text{color:var(--text)}.result-mark{background:var(--greenbg);color:var(--green);border-radius:4px;padding:1px 2px}.panel-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding:13px 17px;color:var(--muted);font-size:.79rem}.btn{border:1px solid transparent;border-radius:11px;padding:9px 13px;font-size:.84rem;font-weight:750;transition:transform .15s,background .15s}.btn:active{transform:scale(.98)}.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:var(--accent2)}.btn-ghost{background:var(--surface2);border-color:var(--line);color:var(--text)}.btn-ghost:hover{border-color:var(--accent)}.foot-actions{display:flex;gap:8px}.features{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-top:18px}.feature{border:1px solid var(--line);border-radius:17px;padding:17px;background:var(--surface)}.feature-icon{display:grid;place-items:center;width:35px;height:35px;background:var(--surface2);color:var(--accent);border-radius:11px;margin-bottom:12px;font-weight:800}.feature strong{display:block;font-size:.91rem;margin-bottom:4px}.feature p{font-size:.82rem;color:var(--muted);margin:0}.privacy{text-align:center;color:var(--muted);font-size:.8rem;margin:21px auto 0;max-width:750px}.privacy span{color:var(--green);font-weight:700}footer{display:flex;justify-content:center;gap:7px;align-items:center;color:var(--muted);font-size:.78rem;margin-top:37px}button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+
+/* Stiluri Modal / Autentificare / Suport */
+.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:none;place-items:center;z-index:1000;backdrop-filter:blur(4px)}.modal-overlay.active{display:grid}.modal{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:24px;width:min(450px,calc(100% - 32px));box-shadow:var(--shadow)}.modal h2{margin-top:0;margin-bottom:12px;font-size:1.4rem}.form-group{margin-bottom:14px}.form-group label{display:block;margin-bottom:6px;font-size:.85rem;color:var(--muted);font-weight:600}.form-group input,.form-group textarea{width:100%;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface2);color:var(--text);outline:none}.form-group input:focus,.form-group textarea:focus{border-color:var(--accent)}.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}.help-msg-list{max-height:200px;overflow-y:auto;margin-bottom:15px;display:flex;flex-direction:column;gap:10px}.msg-card{background:var(--surface2);padding:10px 14px;border-radius:10px;border:1px solid var(--line);font-size:.85rem}.msg-reply{margin-top:6px;padding-top:6px;border-top:1px solid var(--line);color:var(--accent);font-weight:600}.admin-trigger{position:fixed;bottom:15px;right:15px;background:var(--surface);border:1px solid var(--line);padding:8px 12px;border-radius:20px;font-size:.75rem;cursor:pointer;opacity:0.7}.admin-trigger:hover{opacity:1}
+
+@media(max-width:760px){.shell{width:min(100% - 24px,600px);padding-top:16px}header{margin-bottom:42px}.pill{display:none}.workspace{grid-template-columns:1fr}.hero p{font-size:1rem}textarea,.result{min-height:200px}.features{grid-template-columns:1fr}.feature{display:flex;gap:12px;align-items:flex-start}.feature-icon{flex:0 0 35px;margin:0}.feature strong{margin-top:1px}.feature p{margin-top:4px}.feature div:last-child{flex:1}h1{font-size:clamp(2.3rem,12vw,3.4rem)}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="shell">
+<header>
+  <div class="brand"><div class="brandmark" aria-hidden="true">Sc</div><span>Sentence Corrector</span></div>
+  <div class="head-actions">
+    <div class="pill"><span class="live-dot"></span> Corectare live</div>
+    <button class="theme-btn" id="helpBtn" type="button">❓ Ajutor</button>
+    <button class="theme-btn" id="themeToggle" type="button" aria-label="Activează modul întunecat"><span id="themeIcon">☾</span><span id="themeLabel">Mod întunecat</span></button>
+    <div id="userBadge" style="display:none; align-items:center; gap:8px;">
+      <span id="userName" style="font-weight:700; font-size:.85rem;"></span>
+      <button class="btn btn-ghost" id="logoutBtn" style="padding:5px 10px; font-size:.75rem;">Ieșire</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="eyebrow">Scrie cu încredere</div>
+  <h1>Ideile tale,<br><span>scrise mai bine.</span></h1>
+  <p>Scrie natural. Sentence Corrector te ajută să corectezi greșelile comune, să îmbunătățești punctuația și să începi fiecare propoziție corect.</p>
+</section>
+
+<section class="workspace" aria-label="Editor de corectare">
+  <article class="panel">
+    <div class="panel-head"><div class="panel-title"><span class="iconbox">✎</span> Textul tău</div><span class="meta" id="wordCount">0 cuvinte</span></div>
+    <textarea id="source" aria-label="Introdu textul aici" placeholder="Începe să scrii aici...">azi este o zii frumoasa</textarea>
+    <div class="panel-foot"><span>Se actualizează pe măsură ce scrii</span><button class="btn btn-ghost" id="clearBtn" type="button">Șterge textul</button></div>
+  </article>
+  <article class="panel">
+    <div class="panel-head"><div class="panel-title"><span class="iconbox" style="color:var(--green)">✓</span> Text corectat</div><span class="meta" id="changeCount">Gata de lucru</span></div>
+    <div class="result" id="result" aria-live="polite"></div>
+    <div class="panel-foot"><span id="statusText">Previzualizare instantanee</span><div class="foot-actions"><button class="btn btn-primary" id="copyBtn" type="button">Copiază textul</button></div></div>
+  </article>
+</section>
+
+<section class="features" aria-label="Funcționalități">
+  <div class="feature"><div class="feature-icon">Aa</div><div><strong>Majuscule și diacritice</strong><p>Formatează începuturile propozițiilor și păstrează scrierea lizibilă.</p></div></div>
+  <div class="feature"><div class="feature-icon">✓</div><div><strong>Corectare rapidă</strong><p>Repară un set de greșeli frecvente în română și engleză.</p></div></div>
+  <div class="feature"><div class="feature-icon">.</div><div><strong>Punctuație mai bună</strong><p>Adaugă punct la final atunci când lipsește.</p></div></div>
+</section>
+
+<p class="privacy"><span>● Datele rămân în browserul tău.</span> Această versiune demonstrativă nu trimite textul către un server.</p>
+<footer>✦ <span>Sentence Corrector</span> · Scrie clar. Comunică mai bine.</footer>
+</main>
+
+<!-- Modal Autentificare -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <h2 id="authTitle">Autentificare / Înregistrare</h2>
+    <p style="font-size:.85rem; color:var(--muted); margin-bottom:15px;">Creează-ți un cont pentru a folosi platforma și modulul de ajutor. Contul va rămâne salvat pe acest dispozitiv.</p>
+    <div class="form-group">
+      <label for="authName">Nume utilizator</label>
+      <input type="text" id="authName" placeholder="Ex: Andrei">
+    </div>
+    <div class="form-group">
+      <label for="authEmail">Email</label>
+      <input type="email" id="authEmail" placeholder="nume@example.com">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="saveAuthBtn">Intră în cont</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Ajutor -->
+<div class="modal-overlay" id="helpModal">
+  <div class="modal">
+    <h2>Solicită Ajutor</h2>
+    <div class="help-msg-list" id="userHelpHistory">
+      <!-- Istoric mesaje utilizator -->
+    </div>
+    <div class="form-group">
+      <label for="helpText">De ce ai nevoie de ajutor?</label>
+      <textarea id="helpText" rows="3" placeholder="Descrie problema ta..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="closeHelpBtn">Închide</button>
+      <button class="btn btn-primary" id="sendHelpBtn">Trimite cererea</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Admin (Pentru tine, pentru a răspunde) -->
+<div class="modal-overlay" id="adminModal">
+  <div class="modal" style="width:min(600px,calc(100% - 32px));">
+    <h2>Panou Admin — Cereri Suport</h2>
+    <div id="adminTicketsList" class="help-msg-list" style="max-height:350px;">
+      <!-- Mesajele primite -->
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="closeAdminBtn">Închide Panou Admin</button>
+    </div>
+  </div>
+</div>
+
+<button class="admin-trigger" id="openAdminBtn">🛠️ Panou Admin (Răspunde la mesaje)</button>
+
+<script>
+// --- Corectare Text ---
+const source=document.getElementById('source'),result=document.getElementById('result'),wordCount=document.getElementById('wordCount'),changeCount=document.getElementById('changeCount'),statusText=document.getElementById('statusText');
+const corrections={
+  'zii':'zi','frumoas':'frumoasă','frumoasa':'frumoasă','frumoasee':'frumoase','buna':'bună','buna ziua':'bună ziua','suntet':'sunteți','sunteti':'sunteți','multumesc':'mulțumesc','romana':'română','copii':'copii','miau':'mi-au','sa':'să','sînt':'sunt','deacord':'de acord','niciunul':'niciunul','vroiam':'voiam',
+  'lovaly':'lovely','teh':'the','recieve':'receive','definately':'definitely','becuase':'because','thier':'their','freind':'friend','seperate':'separate','occured':'occurred','untill':'until','alot':'a lot','tommorow':'tomorrow','adress':'address','langauge':'language','wierd':'weird'
+};
+
+function correctText(input){
+ let text=input;
+ for(const [wrong,right] of Object.entries(corrections).sort((a,b)=>b[0].length-a[0].length)){
+   const re=new RegExp('(^|[^\\p{L}\\p{N}_])('+wrong.replace(/[.*+?^${}()|[\\]\\\\]/g,'\\$&')+')(?=$|[^\\p{L}\\p{N}_])','giu');
+   text=text.replace(re,(full,before,word)=>before+(word===word.toUpperCase()?right.toUpperCase():(word[0]===word[0].toUpperCase()?right[0].toLocaleUpperCase('ro')+right.slice(1):right)));
+ }
+ text=text.replace(/(^\\s*)([a-zăâîșț])|([.!?]\\s+)([a-zăâîșț])/giu,(_,prefix,first,separator,next)=>(prefix||separator||'')+(first||next).toLocaleUpperCase('ro'));
+ text=text.replace(/\\bi\\b/g,'I');
+ const trimmed=text.trimEnd();
+ if(trimmed&&!/[.!?…]["'’)\]]*$/.test(trimmed)) text=trimmed+'.';
+ return text;
+}
+
+function render(){
+ const original=source.value,corrected=correctText(original),words=original.trim()?original.trim().split(/\\s+/).length:0;
+ wordCount.textContent=words+' '+(words===1?'cuvânt':'cuvinte');
+ if(!original.trim()){result.textContent='Textul corectat va apărea aici…';result.classList.add('placeholder');changeCount.textContent='Gata de lucru';statusText.textContent='Previzualizare instantanee';return;}
+ result.classList.remove('placeholder');result.textContent=corrected;
+ const changed=corrected.trim()!==original.trim();changeCount.textContent=changed?'Sugestii de îmbunătățire':'Arată bine';statusText.textContent=changed?'Am aplicat corectări de bază':'Nu am găsit greșeli din lista de bază';
+}
+
+source.addEventListener('input',render);
+document.getElementById('clearBtn').addEventListener('click',()=>{source.value='';source.focus();render()});
+document.getElementById('copyBtn').addEventListener('click',async()=>{
+ const text=result.classList.contains('placeholder')?'':result.textContent;
+ if(!text){statusText.textContent='Scrie mai întâi un text.';return;}
+ try{await navigator.clipboard.writeText(text);statusText.textContent='Text copiat!';}
+ catch(e){statusText.textContent='Copierea nu este disponibilă. Selectează și copiază textul manual.';}
+});
+
+// --- Schimbare Tema ---
+const root=document.documentElement,themeToggle=document.getElementById('themeToggle'),themeLabel=document.getElementById('themeLabel'),themeIcon=document.getElementById('themeIcon');
+function setTheme(theme){root.dataset.theme=theme;const dark=theme==='dark';themeLabel.textContent=dark?'Mod luminos':'Mod întunecat';themeIcon.textContent=dark?'☀':'☾';themeToggle.setAttribute('aria-label',dark?'Activează modul luminos':'Activează modul întunecat');document.querySelector('meta[name="theme-color"]').content=dark?'#0e1220':'#f5f6fb';}
+let savedTheme=null;try{savedTheme=localStorage.getItem('sc-theme')}catch(e){}
+setTheme(savedTheme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
+themeToggle.addEventListener('click',()=>{const next=root.dataset.theme==='dark'?'light':'dark';setTheme(next);try{localStorage.setItem('sc-theme',next)}catch(e){}});
+render();
+
+// --- Logica de Autentificare & Salvare Cont ---
+const authModal = document.getElementById('authModal');
+const saveAuthBtn = document.getElementById('saveAuthBtn');
+const userBadge = document.getElementById('userBadge');
+const userNameSpan = document.getElementById('userName');
+const logoutBtn = document.getElementById('logoutBtn');
+
+let currentUser = JSON.parse(localStorage.getItem('sc-user') || 'null');
+
+function checkAuth(){
+  if(!currentUser){
+    authModal.classList.add('active');
+    userBadge.style.display = 'none';
+  } else {
+    authModal.classList.remove('active');
+    userBadge.style.display = 'flex';
+    userNameSpan.textContent = '👋 ' + currentUser.name;
+  }
+}
+
+saveAuthBtn.addEventListener('click', ()=>{
+  const name = document.getElementById('authName').value.trim();
+  const email = document.getElementById('authEmail').value.trim();
+  if(!name || !email){
+    alert('Te rugăm să introduci numele și emailul.');
+    return;
+  }
+  currentUser = { name, email };
+  localStorage.setItem('sc-user', JSON.stringify(currentUser));
+  checkAuth();
+});
+
+logoutBtn.addEventListener('click', ()=>{
+  localStorage.removeItem('sc-user');
+  currentUser = null;
+  checkAuth();
+});
+
+checkAuth();
+
+// --- Modul Ajutor & Tickete ---
+const helpModal = document.getElementById('helpModal');
+const helpBtn = document.getElementById('helpBtn');
+const closeHelpBtn = document.getElementById('closeHelpBtn');
+const sendHelpBtn = document.getElementById('sendHelpBtn');
+const helpText = document.getElementById('helpText');
+const userHelpHistory = document.getElementById('userHelpHistory');
+
+function getTickets(){
+  return JSON.parse(localStorage.getItem('sc-tickets') || '[]');
+}
+
+function saveTickets(tickets){
+  localStorage.setItem('sc-tickets', JSON.stringify(tickets));
+}
+
+function loadUserTickets(){
+  if(!currentUser) return;
+  const tickets = getTickets().filter(t => t.email === currentUser.email);
+  userHelpHistory.innerHTML = '';
+  if(tickets.length === 0){
+    userHelpHistory.innerHTML = '<div style="color:var(--muted); font-size:.8rem;">Nu ai trimis nicio solicitare încă.</div>';
+    return;
+  }
+  tickets.forEach(t => {
+    const card = document.createElement('div');
+    card.className = 'msg-card';
+    card.innerHTML = `<div><strong>Problema ta:</strong> ${t.message}</div>` + 
+      (t.reply ? `<div class="msg-reply"><strong>Răspuns Administrator:</strong> ${t.reply}</div>` : '<div style="color:var(--muted); font-size:.75rem; margin-top:4px;">⏳ În așteptarea unui răspuns...</div>');
+    userHelpHistory.appendChild(card);
+  });
+}
+
+helpBtn.addEventListener('click', ()=>{
+  if(!currentUser){
+    checkAuth();
+    return;
+  }
+  loadUserTickets();
+  helpModal.classList.add('active');
+});
+
+closeHelpBtn.addEventListener('click', ()=>{
+  helpModal.classList.remove('active');
+});
+
+sendHelpBtn.addEventListener('click', ()=>{
+  const text = helpText.value.trim();
+  if(!text){
+    alert('Scrie detaliile problemei tale.');
+    return;
+  }
+  const tickets = getTickets();
+  tickets.push({
+    id: Date.now(),
+    name: currentUser.name,
+    email: currentUser.email,
+    message: text,
+    reply: ''
+  });
+  saveTickets(tickets);
+  helpText.value = '';
+  loadUserTickets();
+  alert('Solicitarea a fost trimisă! Proprietarul site-ului îți va răspunde curând.');
+});
+
+// --- Panou Admin (Pentru a vedea și răspunde la mesaje) ---
+const adminModal = document.getElementById('adminModal');
+const openAdminBtn = document.getElementById('openAdminBtn');
+const closeAdminBtn = document.getElementById('closeAdminBtn');
+const adminTicketsList = document.getElementById('adminTicketsList');
+
+function loadAdminTickets(){
+  const tickets = getTickets();
+  adminTicketsList.innerHTML = '';
+  if(tickets.length === 0){
+    adminTicketsList.innerHTML = '<div style="color:var(--muted); font-size:.85rem;">Nu există nicio solicitare de la utilizatori.</div>';
+    return;
+  }
+  tickets.forEach(t => {
+    const card = document.createElement('div');
+    card.className = 'msg-card';
+    card.innerHTML = `
+      <div><strong>Utilizator:</strong> ${t.name} (${t.email})</div>
+      <div style="margin-top:4px;"><strong>Întrebare:</strong> ${t.message}</div>
+      <div style="margin-top:8px;">
+        <input type="text" id="reply-input-${t.id}" placeholder="Scrie răspunsul tău..." value="${t.reply || ''}" style="width:70%; padding:6px; border-radius:6px; border:1px solid var(--line);">
+        <button class="btn btn-primary" style="padding:6px 10px; font-size:.75rem;" onclick="replyTicket(${t.id})">Trimite Răspuns</button>
+      </div>
+    `;
+    adminTicketsList.appendChild(card);
+  });
+}
+
+window.replyTicket = function(id){
+  const input = document.getElementById(`reply-input-${id}`);
+  const replyText = input.value.trim();
+  if(!replyText) return;
+
+  const tickets = getTickets();
+  const ticket = tickets.find(t => t.id === id);
+  if(ticket){
+    ticket.reply = replyText;
+    saveTickets(tickets);
+    alert('Răspuns salvat și trimis utilizatorului!');
+    loadAdminTickets();
+  }
+};
+
+openAdminBtn.addEventListener('click', ()=>{
+  loadAdminTickets();
+  adminModal.classList.add('active');
+});
+
+closeAdminBtn.addEventListener('click', ()=>{
+  adminModal.classList.remove('active');
+});
+</script>
+</body>
+</html>
