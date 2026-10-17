@@ -70,10 +70,10 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;ma
 <div class="modal-overlay" id="authModal">
   <div class="modal">
     <h2 id="authTitle">Autentificare / Înregistrare</h2>
-    <p style="font-size:.85rem; color:var(--muted); margin-bottom:15px;">Creează-ți un cont pentru a folosi platforma și modulul de ajutor. Contul va rămâne salvat pe acest dispozitiv.</p>
+    <p style="font-size:.85rem; color:var(--muted); margin-bottom:15px;">Creează-ți un cont pentru a folosi platforma și modulul de ajutor.</p>
     <div class="form-group">
       <label for="authName">Nume utilizator</label>
-      <input type="text" id="authName" placeholder="Ex: N1ko">
+      <input type="text" id="authName" placeholder="Ex: N1ko sau alt nume">
     </div>
     <div class="form-group">
       <label for="authEmail">Email</label>
@@ -105,9 +105,9 @@ header{display:flex;align-items:center;justify-content:space-between;gap:14px;ma
 
 <!-- Modal Admin (Doar pentru N1ko) -->
 <div class="modal-overlay" id="adminModal">
-  <div class="modal" style="width:min(600px,calc(100% - 32px));">
+  <div class="modal" style="width:min(650px,calc(100% - 32px));">
     <h2>Panou Admin — Cereri Suport</h2>
-    <div id="adminTicketsList" class="help-msg-list" style="max-height:350px;">
+    <div id="adminTicketsList" class="help-msg-list" style="max-height:400px;">
       <!-- Mesajele primite -->
     </div>
     <div class="modal-actions">
@@ -184,7 +184,7 @@ function checkAuth(){
     userBadge.style.display = 'flex';
     userNameSpan.textContent = '👋 ' + currentUser.name;
     
-    // Verifică dacă utilizatorul logat este N1ko
+    // Verifică dacă utilizatorul logat este N1ko (indiferent de majuscule/minuscule)
     if(currentUser.name.trim().toLowerCase() === 'n1ko'){
       if(openAdminBtn) openAdminBtn.style.display = 'block';
     } else {
@@ -276,10 +276,10 @@ sendHelpBtn.addEventListener('click', ()=>{
   saveTickets(tickets);
   helpText.value = '';
   loadUserTickets();
-  alert('Solicitarea a fost trimisă! Proprietarul site-ului îți va răspunde curând.');
+  alert('Solicitarea a fost trimisă!');
 });
 
-// --- Panou Admin (Doar pentru N1ko) ---
+// --- Panou Admin (Doar pentru N1ko + Opțiune Închidere Întrebare) ---
 const adminModal = document.getElementById('adminModal');
 const closeAdminBtn = document.getElementById('closeAdminBtn');
 const adminTicketsList = document.getElementById('adminTicketsList');
@@ -295,10 +295,13 @@ function loadAdminTickets(){
     const card = document.createElement('div');
     card.className = 'msg-card';
     card.innerHTML = `
-      <div><strong>Utilizator:</strong> ${t.name} (${t.email})</div>
-      <div style="margin-top:4px;"><strong>Întrebare:</strong> ${t.message}</div>
-      <div style="margin-top:8px;">
-        <input type="text" id="reply-input-${t.id}" placeholder="Scrie răspunsul tău..." value="${t.reply || ''}" style="width:70%; padding:6px; border-radius:6px; border:1px solid var(--line);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <strong>Utilizator:</strong> ${t.name} (${t.email})
+        <button class="btn btn-ghost" style="padding:3px 8px; font-size:.7rem; color:#e74c3c; border-color:#e74c3c;" onclick="closeTicket(${t.id})">❌ Închide întrebarea</button>
+      </div>
+      <div style="margin-bottom:8px;"><strong>Întrebare:</strong> ${t.message}</div>
+      <div>
+        <input type="text" id="reply-input-${t.id}" placeholder="Scrie răspunsul tău..." value="${t.reply || ''}" style="width:65%; padding:6px; border-radius:6px; border:1px solid var(--line);">
         <button class="btn btn-primary" style="padding:6px 10px; font-size:.75rem;" onclick="replyTicket(${t.id})">Trimite Răspuns</button>
       </div>
     `;
@@ -317,6 +320,15 @@ window.replyTicket = function(id){
     ticket.reply = replyText;
     saveTickets(tickets);
     alert('Răspuns salvat și trimis utilizatorului!');
+    loadAdminTickets();
+  }
+};
+
+window.closeTicket = function(id){
+  if(confirm('Sigur vrei să închizi și să ștergi această întrebare?')){
+    let tickets = getTickets();
+    tickets = tickets.filter(t => t.id !== id);
+    saveTickets(tickets);
     loadAdminTickets();
   }
 };
