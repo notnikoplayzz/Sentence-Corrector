@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f8fc">
+  <title>Correctly AI — Live Writing Correction</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #697386;
+      --line: #e5e9f2;
+      --panel: #ffffff;
+      --green: #16845b;
+      --green-soft: #e9f8f0;
+      --purple: #6558d3;
+      --bg: #f7f8fc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at 15% 0%, #edf0ff 0, transparent 32%), var(--bg);
+      color: var(--ink);
+      font: 16px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .shell { width: min(1040px, calc(100% - 32px)); margin: 0 auto; padding: 34px 0 48px; }
+    header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 54px; }
+    .brand { display: flex; align-items: center; gap: 11px; font-weight: 800; letter-spacing: -.04em; font-size: 1.35rem; }
+    .logo { width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center; color: white; background: linear-gradient(135deg, var(--purple), #8c7bfa); box-shadow: 0 8px 22px #6558d333; }
+    .status { display: inline-flex; align-items: center; gap: 7px; border: 1px solid #cdeedc; background: #f0fbf5; color: #16784f; border-radius: 999px; padding: 7px 12px; font-size: .83rem; font-weight: 650; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: #21a66a; }
+    .hero { text-align: center; max-width: 720px; margin: 0 auto 30px; }
+    .eyebrow { color: var(--purple); text-transform: uppercase; font-size: .76rem; font-weight: 800; letter-spacing: .13em; }
+    h1 { font-size: clamp(2.2rem, 6vw, 4rem); line-height: 1.06; letter-spacing: -.06em; margin: 12px 0 17px; }
+    h1 span { color: var(--purple); }
+    .hero p { color: var(--muted); font-size: 1.08rem; max-width: 580px; margin: 0 auto; }
+    .workspace { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: stretch; }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; box-shadow: 0 18px 50px #25345b0a; overflow: hidden; min-width: 0; }
+    .card-head { display: flex; align-items: center; justify-content: space-between; padding: 19px 21px; border-bottom: 1px solid var(--line); gap: 10px; }
+    .card-title { display: flex; align-items: center; gap: 9px; font-weight: 750; }
+    .tiny-label { color: var(--muted); font-size: .78rem; }
+    textarea { width: 100%; min-height: 285px; padding: 22px; border: 0; outline: 0; resize: vertical; font: inherit; line-height: 1.8; color: var(--ink); background: transparent; }
+    textarea::placeholder { color: #a0a8b8; }
+    .output { min-height: 285px; padding: 22px; font-size: 1.02rem; line-height: 1.85; overflow-wrap: anywhere; white-space: pre-wrap; }
+    .output.empty { color: #a0a8b8; }
+    .output .changed { background: var(--green-soft); color: #126a49; border-radius: 4px; }
+    .card-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; border-top: 1px solid var(--line); padding: 13px 20px; color: var(--muted); font-size: .8rem; }
+    button { cursor: pointer; border: 0; border-radius: 11px; padding: 10px 14px; font: inherit; font-size: .88rem; font-weight: 700; }
+    .primary { color: white; background: var(--purple); }
+    .secondary { color: #4f46b6; background: #f0efff; }
+    button:focus-visible, textarea:focus-visible { outline: 3px solid #aaa2ff; outline-offset: 3px; }
+    .actions { display: flex; gap: 8px; align-items: center; }
+    .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 22px; }
+    .feature { padding: 17px; border: 1px solid var(--line); border-radius: 16px; background: #ffffffa8; }
+    .feature-icon { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: #f0efff; color: var(--purple); margin-bottom: 10px; }
+    .feature strong { display: block; font-size: .93rem; margin-bottom: 4px; }
+    .feature p { margin: 0; color: var(--muted); font-size: .84rem; }
+    .note { margin: 20px auto 0; max-width: 760px; color: var(--muted); text-align: center; font-size: .82rem; }
+    footer { text-align: center; color: #929bad; font-size: .8rem; margin-top: 38px; }
+    @media (max-width: 720px) {
+      .shell { padding-top: 20px; }
+      header { margin-bottom: 38px; }
+      .workspace { grid-template-columns: 1fr; }
+      textarea, .output { min-height: 190px; }
+      .features { grid-template-columns: 1fr; }
+      .hero p { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div class="brand"><div class="logo" aria-hidden="true">✦</div> Correctly AI</div>
+      <div class="status"><span class="dot"></span> Live correction</div>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow">Write with confidence</div>
+      <h1>Your words, <span>made better.</span></h1>
+      <p>Type naturally. Correctly helps tidy up spelling, capitalization, and punctuation as you write.</p>
+    </section>
+
+    <section class="workspace" aria-label="Live writing correction demo">
+      <article class="card">
+        <div class="card-head">
+          <div class="card-title"><span aria-hidden="true">✎</span> Your text</div>
+          <span class="tiny-label" id="wordCount">0 words</span>
+        </div>
+        <textarea id="source" spellcheck="true" aria-label="Type your text here" placeholder="Try: today is a lovaly day">today is a lovaly day</textarea>
+        <div class="card-foot">
+          <span>Changes appear as you type</span>
+          <button class="secondary" id="clearBtn" type="button">Clear text</button>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-head">
+          <div class="card-title"><span aria-hidden="true" style="color:var(--green)">✓</span> Corrected text</div>
+          <span class="tiny-label" id="changeCount">Ready to help</span>
+        </div>
+        <div class="output" id="result" aria-live="polite"></div>
+        <div class="card-foot">
+          <span id="statusText">Preview updates instantly</span>
+          <div class="actions">
+            <button class="primary" id="copyBtn" type="button">Copy result</button>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="features" aria-label="Features">
+      <div class="feature">
+        <div class="feature-icon" aria-hidden="true">Aa</div>
+        <strong>Clean capitalization</strong>
+        <p>Capitalize sentence beginnings and the standalone word “I”.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon" aria-hidden="true">✓</div>
+        <strong>Common spelling fixes</strong>
+        <p>Correct a starter set of common typos as you type.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon" aria-hidden="true">.</div>
+        <strong>Polished punctuation</strong>
+        <p>Add final punctuation when a complete sentence needs it.</p>
+      </div>
+    </section>
+
+    <p class="note">Starter demo: corrections run in your browser. This version uses a small typo dictionary, not a full AI grammar engine. Your text is not sent to a server.</p>
+    <footer>Made for clearer writing · Correctly AI</footer>
+  </main>
+
+  <script>
+    const source = document.getElementById('source');
+    const result = document.getElementById('result');
+    const wordCount = document.getElementById('wordCount');
+    const changeCount = document.getElementById('changeCount');
+    const statusText = document.getElementById('statusText');
+
+    // Add more entries here as you expand the prototype.
+    const corrections = {
+      'lovaly': 'lovely',
+      'teh': 'the',
+      'recieve': 'receive',
+      ' wierd': ' weird',
+      'definately': 'definitely',
+      'becuase': 'because',
+      'thier': 'their',
+      'freind': 'friend',
+      ' seperate': ' separate',
+      'occured': 'occurred',
+      'untill': 'until',
+      'alot': 'a lot',
+      ' tommorow': ' tomorrow',
+      ' adress': ' address',
+      ' langauge': ' language',
+      ' graet': ' great',
+      ' thnaks': ' thanks',
+      ' doesent': "doesn't",
+      ' isnt': " isn't",
+      ' dont': " don't",
+      ' cant': " can't",
+      ' wont': " won't"
+    };
+
+    function correctText(text) {
+      let corrected = text;
+      // Correct common whole-word misspellings without changing word fragments.
+      for (const [wrong, right] of Object.entries(corrections)) {
+        const key = wrong.trim();
+        const pattern = new RegExp('\\b' + key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi');
+        corrected = corrected.replace(pattern, match => {
+          if (match === match.toUpperCase()) return right.toUpperCase();
+          if (match[0] === match[0].toUpperCase()) return right[0].toUpperCase() + right.slice(1);
+          return right;
+        });
+      }
+      // Capitalize the first letter of the text and after sentence-ending punctuation.
+      corrected = corrected.replace(/(^\s*)([a-z])|([.!?]\s+)([a-z])/g, (_, prefix, first, separator, next) => {
+        return (prefix || separator || '') + (first || next).toUpperCase();
+      });
+      // Capitalize standalone "i".
+      corrected = corrected.replace(/\bi\b/g, 'I');
+      // Add a period to a non-empty final sentence if it has no ending punctuation.
+      const trimmed = corrected.trimEnd();
+      if (trimmed && !/[.!?…]["'’)\]]*$/.test(trimmed)) {
+        corrected = trimmed + '.';
+      }
+      return corrected;
+    }
+
+    function escapeHtml(value) {
+      return value.replace(/[&<>"']/g, char => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      })[char]);
+    }
+
+    function render() {
+      const original = source.value;
+      const corrected = correctText(original);
+      const words = original.trim() ? original.trim().split(/\s+/).length : 0;
+      wordCount.textContent = words + (words === 1 ? ' word' : ' words');
+
+      if (!original.trim()) {
+        result.textContent = 'Your corrected text will appear here…';
+        result.classList.add('empty');
+        changeCount.textContent = 'Ready to help';
+        statusText.textContent = 'Preview updates instantly';
+        return;
+      }
+
+      result.classList.remove('empty');
+      result.textContent = corrected;
+      const changed = corrected.trim() !== original.trim();
+      changeCount.textContent = changed ? 'Improvements suggested' : 'Looking good';
+      statusText.textContent = changed ? 'Preview includes automatic fixes' : 'No basic fixes needed';
+    }
+
+    source.addEventListener('input', render);
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      source.value = '';
+      source.focus();
+      render();
+    });
+    document.getElementById('copyBtn').addEventListener('click', async () => {
+      const text = result.classList.contains('empty') ? '' : result.textContent;
+      if (!text) {
+        statusText.textContent = 'Type something first';
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(text);
+        statusText.textContent = 'Copied to clipboard!';
+      } catch (error) {
+        statusText.textContent = 'Copy blocked by browser. Select the result and copy it.';
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
